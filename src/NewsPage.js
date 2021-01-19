@@ -1,10 +1,7 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { StyleSheet, View, Text} from 'react-native'
 
 const NewsPage = () => {
-    useEffect(()=>{
-        console.log('news')
-    },[])
     return (
         <View style={styles.news}>
             <Text style={styles.newsEmptyText}>Новостей пока нет</Text>

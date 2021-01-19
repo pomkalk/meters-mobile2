@@ -1,14 +1,15 @@
 import React from 'react'
-import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View } from 'react-native'
 import { useSelector, useDispatch } from 'react-redux'
 import Appbar from './components/Appbar'
 import BottomBar from './components/BottomBar'
-import { MeterIcon, NewsIcon, NotifyIcon, PlusIcon, SettingsIcon, QrIcon} from './components/Icons'
+import { MeterIcon, NewsIcon, NotifyIcon } from './components/Icons'
 import { setPageKey, setTitle } from './store'
 import NewsPage from './NewsPage'
 import MetersPage from './MetersPage'
 import NotificationsPage from './NotificationsPage'
 import { useHistory } from 'react-router-native'
+
 
 const Main = () => {
     const dispatch = useDispatch()
@@ -17,8 +18,6 @@ const Main = () => {
         title: state.title,
         pageKey: state.pageKey
     }))
-
-    
 
     const route = {
         news: <NewsPage />,
@@ -65,3 +64,5 @@ const styles = StyleSheet.create({
         paddingHorizontal: 16
     }
 })
+
+

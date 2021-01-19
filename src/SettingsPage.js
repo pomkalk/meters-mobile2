@@ -13,7 +13,9 @@ const SettingsPage = () => {
     return (
         <View>
             <Appbar title="Настройки" back onBack={onBack}/>
-            <Text>Настроек пока нет</Text>
+            <View style={{padding: 16}}>
+                <Text>Настроек пока нет</Text>
+            </View>
         </View>
     )
 }

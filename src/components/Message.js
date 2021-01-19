@@ -5,10 +5,10 @@ import { InfoIcon } from './Icons'
 const Message = ({title, body}) => {
     return (
         <View style={styles.message}>
-            <InfoIcon size={56} />
-            <View style={styles.body}>
-                <Text style={[styles.font, { fontSize: 20}]}>{title}</Text>
-                <Text style={[styles.font, { fontSize: 14, marginTop: 4}]}>{body}</Text>
+            <View style={styles.type}></View>
+            <View style={styles.content}>
+                <Text style={styles.title}>{title}</Text>
+                <Text style={styles.body}>{body}</Text>
             </View>
         </View>
     )
@@ -18,20 +18,33 @@ export default Message
 
 const styles = StyleSheet.create({
     message: {
-        borderColor: '#4A7CFE',
+        backgroundColor: '#F0F0F0',
         borderRadius: 4,
-        borderWidth: 2,
-        padding: 16,
-        backgroundColor: 'rgba(74, 124, 254, 0.26)',
+        marginBottom: 16,
         display: 'flex',
         flexDirection: 'row',
+        overflow: 'hidden'
+    },
+    type: {
+        backgroundColor: '#4A7CFE',
+        width: 4
+    },
+    content: {
+        flex: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        paddingHorizontal: 16,
+        paddingVertical: 8        
+    },
+    title: {
+        fontFamily: 'Roboto',
+        color: '#222222',
+        fontSize: 20,
+        marginBottom: 8
     },
     body: {
-        marginLeft: 8,
-        flex: 1
-    },
-    font: {
         fontFamily: 'Roboto',
-        color: '#222'
+        fontSize: 14,
+        color: '#222222'
     }
 })

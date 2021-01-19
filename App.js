@@ -1,26 +1,36 @@
 import { StatusBar } from 'expo-status-bar';
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import store from './src/store'
+import store, { getStatus, initMeters, setExpoToken } from './src/store'
 import { NativeRouter, Route, BackButton, Redirect } from 'react-router-native'
-import { Provider as StoreProvider } from 'react-redux'
+import { Provider as StoreProvider, useDispatch } from 'react-redux'
 import Main from './src/Main'
 import SettingsPage from './src/SettingsPage';
-
+import * as Notifications from 'expo-notifications'
+import AddPage from './src/AddPage';
+import SelectPage from './src/SelectPage'
 
 export default function App() {
+  useEffect(()=>{
+    store.dispatch(getStatus())
+    store.dispatch(initMeters())
+    registerForPushNotifications().then(token => {
+        store.dispatch(setExpoToken(token))
+    })
+  }, [])
+
   return (
     <StoreProvider store={store}>
       <NativeRouter>
         <BackButton>
           <View style={styles.container}>
-            
-
             <Route path="/" exact>
               <Redirect to="main" />
             </Route>
             <Route path="/main" component={Main} />
             <Route path="/settings" component={SettingsPage} />
+            <Route path="/add" component={AddPage} />
+            <Route path="/select/:type" component={SelectPage} />
           </View>
         </BackButton>
       </NativeRouter>
@@ -34,3 +44,28 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
 });
+
+
+async function registerForPushNotifications () {
+  let token = null
+
+  if (Platform.OS === 'android') {
+      Notifications.setNotificationChannelAsync('uezmeters', {
+          name: 'uezmeters',
+          importance: Notifications.AndroidImportance.MAX,
+          vibrationPattern: [0, 250, 250, 250],
+          lightColor: '#4A7CFE'
+      })
+  }
+  
+  const { status } = await Notifications.getPermissionsAsync()
+  let access = status
+  if (access !== 'granted') {
+      const { status } = await Notifications.requestPermissionsAsync()
+      access = status
+  }
+  if (access === 'granted') {
+    token = (await Notifications.getExpoPushTokenAsync()).data
+  }
+  return token
+}

@@ -1,29 +1,35 @@
 import React, {useEffect} from 'react'
-import { StyleSheet, View, Text, ScrollView} from 'react-native'
+import { StyleSheet, View, Text, ScrollView, RefreshControl } from 'react-native'
 import Loader from './components/Loader'
 import Message from './components/Message'
 import { useDispatch, useSelector } from 'react-redux'
-import { setLoading } from './store'
+import { getStatus, setLoading } from './store'
+import SavedList from './components/SavedList'
+import FAB from './components/FAB'
+import { useHistory } from 'react-router-native'
 
 const MetersPage = () => {
     const dispatch = useDispatch()
-    const { status, statusLoading } = useSelector(state => ({
+    const history = useHistory()
+    const { status, statusLoading, requesting } = useSelector(state => ({
         status: state.status,
-        statusLoading: state.loading.status
+        statusLoading: state.loading.status,
+        requesting: state.loading.request
     }))
 
-    useEffect(()=>{
-        console.log('meters')
-        setTimeout(()=>{
-            dispatch(setLoading('status', false))
-        }, 5000)
-    },[])
+    const onStatusRefresh = () => {
+        dispatch(getStatus())
+    }
+
     return (
-        <ScrollView style={styles.container}>
-            {statusLoading&&<Loader />}
-            {!status.access&&<Message title="Внимание" body="Здравствуйте, ввод показаний доступен в период с 08:00 17 числа по 23:59 25 числа каждого месяца." />}
-            <Text>Meters</Text>
-        </ScrollView>
+        <View style={{flex: 1}}>
+            <ScrollView style={styles.container} refreshControl={<RefreshControl colors={['#4A7CFE']} refreshing={(statusLoading||requesting)} onRefresh={onStatusRefresh}/>}>
+                {!status.access&&<Message title="Внимание" body={status.message} />}
+                <SavedList />
+                
+            </ScrollView>
+            <FAB onPress={()=>history.push('/add')} />
+        </View>
     )
 }
 
@@ -32,6 +38,6 @@ export default MetersPage
 const styles = StyleSheet.create({
     container: {
         paddingHorizontal: 16,
-        marginVertical: 8
+        
     }
 })
