@@ -1,10 +1,10 @@
 import React from 'react'
 import { StyleSheet, View, Text} from 'react-native'
 import Constants from 'expo-constants'
-import { BackIcon, SettingsIcon } from './Icons'
+import { BackIcon } from './Icons'
 import Ripple from 'react-native-material-ripple'
 
-const Appbar = ({back, onBack, title, subtitle, action, onAction}) => {
+const Appbar = ({back, onBack, title, subtitle, action, actionIcon, onAction}) => {
     return (
         <View>
             <View style={styles.statusbar} />
@@ -17,7 +17,7 @@ const Appbar = ({back, onBack, title, subtitle, action, onAction}) => {
                     {subtitle&&<Text style={styles.subtitle}>{ subtitle }</Text>}
                 </View>
                 {action&&<Ripple style={{ padding: 8 }} rippleContainerBorderRadius={50} onPress={onAction}>
-                        <SettingsIcon />
+                        {actionIcon}
                 </Ripple>}
             </View>
         </View>
@@ -28,11 +28,12 @@ export default Appbar
 
 const styles = StyleSheet.create({
     statusbar: {
-        height: Constants.statusBarHeight
+        height: Constants.statusBarHeight,
+        backgroundColor: 'white'
     },
     appbar: {
         height: 56,
-        // backgroundColor: 'rgba(255, 0, 0, 0.1)',
+        backgroundColor: 'white',
         padding: 16,
         display: 'flex',
         flexDirection: 'row',

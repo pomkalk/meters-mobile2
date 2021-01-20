@@ -1,11 +1,15 @@
 import React, { useEffect } from 'react'
 import { StyleSheet, View, Text, FlatList} from 'react-native'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import Ripple from 'react-native-material-ripple'
 import { RightIcon } from './Icons'
+import { useHistory } from 'react-router-native'
+import { getMeter, setActiveView } from '../store'
 
 const SavedList = () => {
     const meters = useSelector(state=>state.saved)
+    const history = useHistory()
+    const dispatch = useDispatch()
 
     if (meters === null) {
         return (
@@ -15,6 +19,12 @@ const SavedList = () => {
         )
     }
 
+    const onSelect = (item) => {
+        
+        dispatch(getMeter(item))
+        history.push(`/view`)
+    }
+
     return (
         <View>
             <Text style={styles.title}>Сохраненные счетчики</Text>
@@ -22,8 +32,8 @@ const SavedList = () => {
                 meters.map((item, i) => {
                     const separator = i===0?null:<View style={styles.divider} />
                     return (
-                        <View>
-                            <Ripple style={styles.item} onPress={()=>console.log(item)}>
+                        <View key={item.ls}>
+                            <Ripple style={styles.item} onPress={()=>onSelect(item)}>
                                 <View style={styles.content}>
                                     <Text style={styles.address}>{item.address}</Text>
                                     <Text style={styles.ls}>Лицевой счет: {item.ls}</Text>

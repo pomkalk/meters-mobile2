@@ -11,3 +11,5 @@ export const PlusIcon = (props) => (<Icon name="plus" {...props} color="white" s
 export const QrIcon = (props) => (<Icon name="qrcode" {...props} color="#222" size={props.size||24}/>)
 export const InfoIcon = (props) => (<Icon name="infocirlceo" {...props} color="#222" size={props.size||24}/>)
 export const RightIcon = (props) => (<Icon name="right" {...props} color="#222222" size={props.size||24}/>)
+export const DeleteIcon = (props) => (<Icon name="delete" {...props} color="#222222" size={props.size||24}/>)
+export const ExpandIcon = (props) => (<Icon2 name="expand" {...props} color="#FFFFFF" size={props.size||24}/>)

@@ -9,6 +9,10 @@ import SettingsPage from './src/SettingsPage';
 import * as Notifications from 'expo-notifications'
 import AddPage from './src/AddPage';
 import SelectPage from './src/SelectPage'
+import ViewPage from './src/ViewPage'
+import QrPage from './src/QrPage';
+import EditPage from './src/EditPage';
+import HistoryPage from './src/HistoryPage';
 
 export default function App() {
   useEffect(()=>{
@@ -31,6 +35,10 @@ export default function App() {
             <Route path="/settings" component={SettingsPage} />
             <Route path="/add" component={AddPage} />
             <Route path="/select/:type" component={SelectPage} />
+            <Route path="/view" component={ViewPage} />
+            <Route path="/qrscanner" component={QrPage} />
+            <Route path="/edit" component={EditPage} />
+            <Route path="/history" component={HistoryPage} />
           </View>
         </BackButton>
       </NativeRouter>

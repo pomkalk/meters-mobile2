@@ -3,9 +3,30 @@ import { StyleSheet, View, Text, TextInput} from 'react-native'
 import Loader from './Loader'
 import Ripple from 'react-native-material-ripple'
 
-const Input = ({ value, onChange, placeholder, disabled, loading, readonly, onPress, number}) => {
+const Input = ({ value, onChange, placeholder, disabled, loading, readonly, onPress, number, float}) => {
 
     const showValue = value ? value : placeholder
+
+    const onEdit = (e) => {
+        if (onChange) {
+            let a = e.nativeEvent.text
+            if (number) {
+                if (float) {
+                    a = a.replace(',','.')
+                    if (a==='.') {
+                        return onChange('')
+                    }
+                    if ((a.match(/\./g)||[]).length > 1) {
+                        return
+                    }
+                    a = (a.match(/([\d\.])/g)||[]).join('')
+                } else {
+                    a = (a.match(/([\d])/g)||[]).join('')
+                }
+            }
+            onChange(a)
+        }
+    }
 
     if (readonly) {
         return (
@@ -22,7 +43,7 @@ const Input = ({ value, onChange, placeholder, disabled, loading, readonly, onPr
 
     return (
         <View style={styles.container}>
-            <TextInput keyboardType={number ? 'decimal-pad': 'default'} value={value} onChange={e=>onChange&&onChange(e.nativeEvent.text)} style={[styles.input, {...(disabled?{backgroundColor: '#f0f0f0', borderColor: '#c0c0c0'}:{})}]} placeholder={placeholder||''} editable={disabled} />
+            <TextInput keyboardType={number ? 'decimal-pad': 'default'} value={value} onChange={onEdit} style={[styles.input, {...(disabled?{backgroundColor: '#f0f0f0', borderColor: '#c0c0c0'}:{})}]} placeholder={placeholder||''} editable={disabled} />
             {loading&&<View style={styles.loader}>
                 <Loader />
             </View>}

@@ -27,7 +27,7 @@ const AddPage = () => {
     }, [])
 
     const onBack = () => {
-        history.goBack()
+        history.replace('/main')
     }
 
     const onSubmit = () => {
@@ -60,7 +60,7 @@ const AddPage = () => {
         <View style={{flex: 1}}>
             <Appbar title="Добавить адрес" back onBack={onBack}/>
             <ScrollView style={styles.container}>
-                <Button text="Сканировать QR код на счете" icon={<QrIcon />} onPress={()=>console.log('qr')} />
+                <Button text="Сканировать QR код на счете" icon={<QrIcon />} onPress={()=>history.push('/qrscanner')} />
                 <View style={styles.divider}>
                     <View style={styles.dividerLine} />
                     <Text style={styles.dividerText}>Указать адрес вручную</Text>
@@ -70,7 +70,7 @@ const AddPage = () => {
                 <Input placeholder="Дом" value={selected.building&&selected.building.value} readonly disabled={disabled.buildings} loading={loading.buildings} onPress={()=>history.push('/select/building')} />
                 <Input placeholder="Квартира" value={selected.apartment&&selected.apartment.value} readonly disabled={disabled.apartments} loading={loading.apartments} onPress={()=>history.push('/select/apartment')} />
                 <Input placeholder="Лицевой счет" number value={selected.ls} onChange={e=>dispatch(setSelected('ls', e))} />
-                <Input placeholder="Площадь помещения" number value={selected.space} onChange={e=>dispatch(setSelected('space', e))} />
+                <Input placeholder="Площадь помещения" number float value={selected.space} onChange={e=>dispatch(setSelected('space', e))} />
                 <Button text="Добавить адрес" textColor="white" flat color="#4A7CFE" onPress={onSubmit} loading={loading.request} />
             </ScrollView>
         </View>

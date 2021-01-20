@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from 'react-native'
 import { useSelector, useDispatch } from 'react-redux'
 import Appbar from './components/Appbar'
 import BottomBar from './components/BottomBar'
-import { MeterIcon, NewsIcon, NotifyIcon } from './components/Icons'
+import { MeterIcon, NewsIcon, NotifyIcon, SettingsIcon } from './components/Icons'
 import { setPageKey, setTitle } from './store'
 import NewsPage from './NewsPage'
 import MetersPage from './MetersPage'
@@ -44,7 +44,7 @@ const Main = () => {
 
     return (
         <View style={styles.container}>
-            <Appbar action onAction={onSettings} title={title} subtitle={`ООО "УЕЗ ЖКУ г. Ленинска-Кузнецкого"`} />
+            <Appbar action onAction={onSettings} actionIcon={<SettingsIcon />} title={title} subtitle={`ООО "УЕЗ ЖКУ г. Ленинска-Кузнецкого"`} />
             <View style={{flex: 1}}>
                 {page&&page}
             </View>

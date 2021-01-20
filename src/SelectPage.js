@@ -12,7 +12,7 @@ const SelectPage = ({ match }) => {
     const [search, setSearch] = useState('')
     const dispatch = useDispatch()
     const history = useHistory()
-    const data = useSelector(state => {
+    let data = useSelector(state => {
         switch (match.params.type) {
             case 'street': return state.streets.reduce((t, v) => {
                 let item = {
@@ -50,7 +50,7 @@ const SelectPage = ({ match }) => {
 
 
     const onBack = () => {
-        history.goBack()
+        history.replace('/add')
     }
 
     const getTitle = () => {
@@ -80,6 +80,10 @@ const SelectPage = ({ match }) => {
                 {/* </View> */}
             </Ripple>
         )
+    }
+
+    if (data === null) {
+        data = []
     }
 
     return (
