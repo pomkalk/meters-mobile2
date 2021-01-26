@@ -22,6 +22,7 @@ const QrPage = () => {
     const onScan = ({ data }) => {
         dispatch(sendQr(data))
         history.replace('/main')
+        // history.replace('/')
     }
 
     let page = (

@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
-import { StyleSheet, View, Text} from 'react-native'
+import { StyleSheet, View, Text, ScrollView} from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-native'
 import Appbar from './components/Appbar'
 import Button from './components/Button'
 import Input from './components/Input'
 import { getHistory, saveMeter, setUpdating } from './store'
+import Message from './components/Message'
 
 const monthName = {
     1: 'Январь',
@@ -63,6 +64,21 @@ const EditPage = () => {
 
     let spent = ''
 
+    let message = null
+    let meter_value = null
+
+    if (!data.access) {
+        message = <Message title="Внимание" body={data.message} />
+        meter_value = <Text style={[styles.text]}>Показание: {data.meter.new_value}</Text>
+    } else {
+        meter_value = (
+            <>
+                <Input placeholder="Текущее показание" number float value={value} onChange={(e)=>setValue(e)} />
+                <Button flat color="#4A7CFE" text="Сохранить" onPress={onSave} loading={loading} />
+            </>
+        )
+    }
+
     if (data.meter.last_value) {
         if (!isNaN(last_value)) {
             let x = parseFloat(value)
@@ -74,9 +90,10 @@ const EditPage = () => {
 
 
     return (
-        <View>
+        <View style={{flex: 1}}>
             <Appbar title="Ввод показаний" back onBack={onBack}/>
-            <View style={{padding: 16}}>
+            <ScrollView style={{padding: 16, flex: 1}}>
+                { message }
                 <Text style={styles.title}>{ data.address }</Text>
                 <View style={styles.divider}>
                     <View style={styles.dividerLine} />
@@ -87,12 +104,11 @@ const EditPage = () => {
                     <Text style={[styles.text]}>Дата последних показаний: {monthName[data.meter.last_month]} {data.meter.last_year} г.</Text>
                     <Text style={[styles.text]}>Последнее показание: {data.meter.last_value}</Text>
                     <Text style={[styles.text, { fontStyle: 'italic'} ]}>Расход: {spent}</Text>
-                    <Input placeholder="Текущее показание" number float value={value} onChange={(e)=>setValue(e)} />
-                    <Button flat color="#4A7CFE" text="Сохранить" onPress={onSave} loading={loading} />
+                    { meter_value }
                     <View style={{paddingTop: 24}}>
                         <Button text="История показаний" onPress={onHistory} />
                     </View>
-            </View>
+            </ScrollView>
         </View>
     )
 }

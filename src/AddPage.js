@@ -28,6 +28,7 @@ const AddPage = () => {
 
     const onBack = () => {
         history.replace('/main')
+        // history.replace('/')
     }
 
     const onSubmit = () => {
@@ -53,6 +54,7 @@ const AddPage = () => {
             return ToastAndroid.showWithGravity('Укажите лицевой счет (6 цифр).', ToastAndroid.SHORT, ToastAndroid.CENTER)
         }
         history.replace('/main')
+        // history.replace('/')
         dispatch(sendAddress())
     }
 

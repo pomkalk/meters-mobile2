@@ -13,7 +13,6 @@ import QrPage from './src/QrPage';
 import EditPage from './src/EditPage';
 import HistoryPage from './src/HistoryPage';
 import Constants from 'expo-constants'
-import AnimatedSwitch from 'react-router-native-animate-stack'
 
 export default function App() {
   const notificationResponser = useRef()
@@ -48,19 +47,17 @@ export default function App() {
       <NativeRouter>
         <BackButton>
           <View style={styles.container}>
-            <AnimatedSwitch>
-              <Route path="/" exact>
-                <Redirect to="main" />
-              </Route>
-              <Route path="/main" component={Main} />
-              <Route path="/settings" component={SettingsPage} />
-              <Route path="/add" component={AddPage} />
-              <Route path="/select/:type" component={SelectPage} />
-              <Route path="/view" component={ViewPage} />
-              <Route path="/qrscanner" component={QrPage} />
-              <Route path="/edit" component={EditPage} />
-              <Route path="/history" component={HistoryPage} />
-            </AnimatedSwitch>
+            <Route path="/" exact>
+              <Redirect to="main" />
+            </Route>
+            <Route path="/main" component={Main} />
+            <Route path="/settings" component={SettingsPage} />
+            <Route path="/add" component={AddPage} />
+            <Route path="/select/:type" component={SelectPage} />
+            <Route path="/view" component={ViewPage} />
+            <Route path="/qrscanner" component={QrPage} />
+            <Route path="/edit" component={EditPage} />
+            <Route path="/history" component={HistoryPage} />
           </View>
         </BackButton>
       </NativeRouter>

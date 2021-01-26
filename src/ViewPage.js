@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, View, Text, Alert, FlatList} from 'react-native'
+import { StyleSheet, View, Text, Alert, FlatList, ScrollView} from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-native'
 import Appbar from './components/Appbar'
@@ -43,6 +43,7 @@ const ViewPage = ({ match }) => {
 
     const onBack = () => {
         history.replace('/main')
+        // history.replace('/')
     }
 
     const onEdit = (item) => {
@@ -68,6 +69,7 @@ const ViewPage = ({ match }) => {
                     onPress: () => {
                         dispatch(removeMeter(view.ls))
                         history.replace('/main')
+                        // history.replace('/')
                     }
                 }, {
                     text: 'Нет',
@@ -115,14 +117,14 @@ const ViewPage = ({ match }) => {
         )
 
         meters = (
-            <FlatList  data={data.meters} keyExtractor={item=>item.id.toString()} renderItem={renderItem} ListEmptyComponent={()=><Text>Пусто</Text>} ItemSeparatorComponent={()=><View style={styles.separator} />} />
+            <FlatList style={{flex: 1}} data={data.meters} keyExtractor={item=>item.id.toString()} renderItem={renderItem} ListEmptyComponent={()=><Text>Пусто</Text>} ItemSeparatorComponent={()=><View style={styles.separator} />} />
         )
     }
 
     return (
-        <View>
+        <View style={{flex: 1}}>
             <Appbar title="Список счетчиков" back onBack={onBack} action actionIcon={<DeleteIcon size={22}/>} onAction={onDelete}/>
-            <View style={{padding: 16}}>
+            <View style={{padding: 16, flex: 1}}>
                 {message}
                 <Text style={styles.title}>{ (view||{}).address }</Text>
                 {loading&&<View style={styles.loading}><Loader /></View>}
