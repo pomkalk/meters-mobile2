@@ -1,9 +1,8 @@
-import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useRef } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import store, { getStatus, initMeters, setExpoToken } from './src/store'
+import { StyleSheet, View } from 'react-native';
+import store, { getStatus, initMeters, setExpoToken, setPageKey } from './src/store'
 import { NativeRouter, Route, BackButton, Redirect } from 'react-router-native'
-import { Provider as StoreProvider, useDispatch } from 'react-redux'
+import { Provider as StoreProvider } from 'react-redux'
 import Main from './src/Main'
 import SettingsPage from './src/SettingsPage';
 import * as Notifications from 'expo-notifications'
@@ -13,14 +12,35 @@ import ViewPage from './src/ViewPage'
 import QrPage from './src/QrPage';
 import EditPage from './src/EditPage';
 import HistoryPage from './src/HistoryPage';
+import Constants from 'expo-constants'
+import AnimatedSwitch from 'react-router-native-animate-stack'
 
 export default function App() {
+  const notificationResponser = useRef()
+  const notificationListener = useRef()
+
   useEffect(()=>{
     store.dispatch(getStatus())
     store.dispatch(initMeters())
     registerForPushNotifications().then(token => {
+        console.log(Constants.installationId, token)
         store.dispatch(setExpoToken(token))
     })
+
+    notificationListener.current = Notifications.addNotificationReceivedListener(response => {
+      console.log('+',response)
+      store.dispatch(setPageKey(response.request.content.data.action))
+    })
+
+    notificationResponser.current = Notifications.addNotificationResponseReceivedListener(response => {
+      console.log("-", response)
+      store.dispatch(setPageKey(response.notification.request.content.data.action))
+    })
+
+    return () => {
+      Notifications.removeNotificationSubscription(notificationListener)
+      Notifications.removeNotificationSubscription(notificationResponser)
+    }
   }, [])
 
   return (
@@ -28,17 +48,19 @@ export default function App() {
       <NativeRouter>
         <BackButton>
           <View style={styles.container}>
-            <Route path="/" exact>
-              <Redirect to="main" />
-            </Route>
-            <Route path="/main" component={Main} />
-            <Route path="/settings" component={SettingsPage} />
-            <Route path="/add" component={AddPage} />
-            <Route path="/select/:type" component={SelectPage} />
-            <Route path="/view" component={ViewPage} />
-            <Route path="/qrscanner" component={QrPage} />
-            <Route path="/edit" component={EditPage} />
-            <Route path="/history" component={HistoryPage} />
+            <AnimatedSwitch>
+              <Route path="/" exact>
+                <Redirect to="main" />
+              </Route>
+              <Route path="/main" component={Main} />
+              <Route path="/settings" component={SettingsPage} />
+              <Route path="/add" component={AddPage} />
+              <Route path="/select/:type" component={SelectPage} />
+              <Route path="/view" component={ViewPage} />
+              <Route path="/qrscanner" component={QrPage} />
+              <Route path="/edit" component={EditPage} />
+              <Route path="/history" component={HistoryPage} />
+            </AnimatedSwitch>
           </View>
         </BackButton>
       </NativeRouter>

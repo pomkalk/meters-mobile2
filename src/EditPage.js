@@ -38,6 +38,8 @@ const EditPage = () => {
     }))
     const [value, setValue] = useState((data.meter.new_value||'').toString())
 
+    let last_value = parseFloat(data.meter.last_value)
+
     const onBack = () => {
         history.replace('/view')
     }
@@ -59,6 +61,18 @@ const EditPage = () => {
         history.replace('/history')
     }
 
+    let spent = ''
+
+    if (data.meter.last_value) {
+        if (!isNaN(last_value)) {
+            let x = parseFloat(value)
+            if (!isNaN(x)) {
+                spent = `${x} - ${last_value} = ${Math.round(((x - last_value) + Number.EPSILON) * 100) / 100}`
+            }
+        }
+    }
+
+
     return (
         <View>
             <Appbar title="Ввод показаний" back onBack={onBack}/>
@@ -72,7 +86,7 @@ const EditPage = () => {
                     <Text style={[styles.text, {fontWeight: 'bold'}]}>Счетчик: {services[data.meter.service]}</Text>
                     <Text style={[styles.text]}>Дата последних показаний: {monthName[data.meter.last_month]} {data.meter.last_year} г.</Text>
                     <Text style={[styles.text]}>Последнее показание: {data.meter.last_value}</Text>
-                    
+                    <Text style={[styles.text, { fontStyle: 'italic'} ]}>Расход: {spent}</Text>
                     <Input placeholder="Текущее показание" number float value={value} onChange={(e)=>setValue(e)} />
                     <Button flat color="#4A7CFE" text="Сохранить" onPress={onSave} loading={loading} />
                     <View style={{paddingTop: 24}}>

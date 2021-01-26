@@ -28,9 +28,9 @@ const Main = () => {
     const page = route[pageKey]
 
     const menu = [
-        {id: 'news', title: 'Новости', icon: <NewsIcon size={24} />},
-        {id: 'meters', title: 'Счетчики', icon: <MeterIcon size={24} />},
-        {id: 'notifications', title: 'Уведомления', icon: <NotifyIcon size={24} />},
+        {id: 'news', title: 'Новости', icon: NewsIcon},
+        {id: 'meters', title: 'Счетчики', icon: MeterIcon },
+        {id: 'notifications', title: 'Уведомления', icon: NotifyIcon},
     ]
 
     const onSelect = (x) => {
