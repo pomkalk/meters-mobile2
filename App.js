@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
-import store, { getStatus, initMeters, setExpoToken, setPageKey } from './src/store'
+import store, { getNews, getStatus, initMeters, registerDevice, setExpoToken, setNewsUpdated, setPageKey, setTitle } from './src/store'
 import { NativeRouter, Route, BackButton, Redirect } from 'react-router-native'
 import { Provider as StoreProvider } from 'react-redux'
 import Main from './src/Main'
@@ -21,19 +21,53 @@ export default function App() {
   useEffect(()=>{
     store.dispatch(getStatus())
     store.dispatch(initMeters())
+    store.dispatch(getNews())
+
     registerForPushNotifications().then(token => {
-        console.log(Constants.installationId, token)
-        store.dispatch(setExpoToken(token))
+        store.dispatch(registerDevice({
+          did: Constants.installationId,
+          expo: token,
+          info: Constants
+        }))
     })
 
     notificationListener.current = Notifications.addNotificationReceivedListener(response => {
-      console.log('+',response)
-      store.dispatch(setPageKey(response.request.content.data.action))
+      let action = null
+      if (response.request){
+        if (response.request.content){
+          if (response.request.content.data) {
+            if (response.request.content.data.action) {
+              action = response.request.content.data.action
+            }
+          }
+        }
+      }
+      if (action === 'news') {
+        store.dispatch(setNewsUpdated(true))
+      }
     })
 
     notificationResponser.current = Notifications.addNotificationResponseReceivedListener(response => {
-      console.log("-", response)
-      store.dispatch(setPageKey(response.notification.request.content.data.action))
+      let action = null
+      if (response.request){
+        if (response.request.content){
+          if (response.request.content.data) {
+            if (response.request.content.data.action) {
+              action = response.request.content.data.action
+            }
+          }
+        }
+      }
+      
+      if (action) {
+        const title = {
+          news: 'Новости',
+          meters: 'Счетчики',
+          notifications: 'Уведомления'
+        }
+        store.dispatch(setPageKey(action))
+        store.dispatch(setTitle(title[action]))
+      }
     })
 
     return () => {
@@ -75,24 +109,29 @@ const styles = StyleSheet.create({
 
 async function registerForPushNotifications () {
   let token = null
+  try {
+    const { status } = await Notifications.getPermissionsAsync()
+    let access = status
+    if (access !== 'granted') {
+        const { status } = await Notifications.requestPermissionsAsync()
+        access = status
+    }
 
-  if (Platform.OS === 'android') {
+    if (access === 'granted') {
+      token = (await Notifications.getExpoPushTokenAsync()).data
+    }
+  
+    if (Platform.OS === 'android') {
       Notifications.setNotificationChannelAsync('uezmeters', {
           name: 'uezmeters',
+          sound: true,
           importance: Notifications.AndroidImportance.MAX,
           vibrationPattern: [0, 250, 250, 250],
           lightColor: '#4A7CFE'
       })
+    }
+    return token
+  } catch (e) {
+    alert (JSON.stringify(e))
   }
-  
-  const { status } = await Notifications.getPermissionsAsync()
-  let access = status
-  if (access !== 'granted') {
-      const { status } = await Notifications.requestPermissionsAsync()
-      access = status
-  }
-  if (access === 'granted') {
-    token = (await Notifications.getExpoPushTokenAsync()).data
-  }
-  return token
 }

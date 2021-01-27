@@ -2,12 +2,13 @@ import React from 'react'
 import { StyleSheet, View, Text } from 'react-native'
 import { InfoIcon } from './Icons'
 
-const Message = ({title, body}) => {
+const Message = ({title, body, date}) => {
     return (
         <View style={styles.message}>
             <View style={styles.type}></View>
             <View style={styles.content}>
                 <Text style={styles.title}>{title}</Text>
+                {date&&<Text style={styles.date}>{date}</Text>}
                 <Text style={styles.body}>{body}</Text>
             </View>
         </View>
@@ -38,13 +39,19 @@ const styles = StyleSheet.create({
     },
     title: {
         fontFamily: 'Roboto',
-        color: '#222222',
+        color: '#222',
         fontSize: 20,
-        marginBottom: 8
+    },
+    date: {
+        fontFamily: 'Roboto',
+        color: '#222',
+        fontSize: 12,
+        opacity: 0.4
     },
     body: {
         fontFamily: 'Roboto',
         fontSize: 14,
-        color: '#222222'
+        color: '#222',
+        marginTop: 8
     }
 })

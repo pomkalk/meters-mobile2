@@ -26,7 +26,9 @@ const initStore = {
         buildings: false,
         apartments: false,
         meter: false,
-        history: false
+        history: false,
+        news: false,
+        newsUpdating: false
     },
     disabled: {
         streets: true,
@@ -44,7 +46,9 @@ const initStore = {
     activeData: null,
     activeEdit: null,
     updating: null,
-    history: null
+    history: null,
+    news: null,
+    newsUpdated: false
 }
 
 export const SET_TITLE = 'SET_TITLE'
@@ -62,6 +66,8 @@ export const SET_ACTIVE_DATA = 'SET_ACTIVE_DATA'
 export const SET_ACTIVE_EDIT = 'SET_ACTIVE_EDIT'
 export const SET_UPDATING = 'SET_UPDATING'
 export const SET_HISTORY = 'SET_HISTORY'
+export const SET_NEWS = 'SET_NEWS'
+export const SET_NEWS_UPDATED = 'SET_NEWS_UPDATED'
 
 export const setTitle = (title) => ({type: SET_TITLE, title})
 export const setPageKey = (key) => ({type: SET_PAGE_KEY, key})
@@ -78,9 +84,16 @@ export const setActiveData = (value) => ({type: SET_ACTIVE_DATA, value})
 export const setActiveEdit = (value) => ({type: SET_ACTIVE_EDIT, value})
 export const setUpdating = (value) => ({type: SET_UPDATING, value})
 export const setHistory = (history) => ({type: SET_HISTORY, history})
+export const setNews = (news) => ({type: SET_NEWS, news})
+export const setNewsUpdated = (updated) => ({type: SET_NEWS_UPDATED, updated})
 
 const noInternet = () => {
     ToastAndroid.showWithGravity('Нет соединения с интернетом', ToastAndroid.LONG, ToastAndroid.CENTER)
+}
+
+const badRequest = (e) => {
+    // TODO: replace with toast
+    Alert.alert('Ошибка', JSON.stringify(e))
 }
 
 export const getStatus = () => (dispatch) => {
@@ -91,7 +104,7 @@ export const getStatus = () => (dispatch) => {
                 setStatus(data)
                 dispatch(setLoading('status', false))
             }).catch(e=>{
-                Alert.alert('Ошибка', JSON.stringify(e))
+                badRequest(e)
             })
         } else {
             noInternet()
@@ -103,7 +116,7 @@ export const initMeters = () => (dispatch) => {
     AsyncStorage.getItem('saved_meters').then(data=>{
         dispatch(setSaved(JSON.parse(data)))
     }).catch(e=>{
-        Alert.alert('Ошибка', JSON.stringify(e))
+        badRequest(e)
     })
 }
 
@@ -117,7 +130,7 @@ export const getStreets = (force = false) => (dispatch, getState) => {
                 axios.get(`${url}/api/address`).then(({data})=>{
                     dispatch(setData('streets', data))
                 }).catch(e=>{
-                    Alert.alert('Ошибка', JSON.stringify(e))
+                    badRequest(e)
                 })
             }
         } else {
@@ -136,7 +149,7 @@ export const getBuildings = (id, force = false) => (dispatch, getState) => {
                 axios.get(`${url}/api/address/s${id}`).then(({data})=>{
                     dispatch(setData('buildings', data))
                 }).catch(e=>{
-                    Alert.alert('Ошибка', JSON.stringify(e))
+                    badRequest(e)
                 })
             }
         } else {
@@ -155,7 +168,7 @@ export const getApartments = (id, force = false) => (dispatch, getState) => {
                 axios.get(`${url}/api/address/b${id}`).then(({data})=>{
                     dispatch(setData('apartments', data))
                 }).catch(e=>{
-                    Alert.alert('Ошибка', JSON.stringify(e))
+                    badRequest(e)
                 })
             }
         } else {
@@ -205,7 +218,7 @@ export const sendAddress = () => (dispatch, getState) => {
                 dispatch(setSelected('ls', null))
                 dispatch(setSelected('space', null))
             }).catch(e=>{
-                Alert.alert('Ошибка', JSON.stringify(e))
+                badRequest(e)
             })
         } else {
             noInternet()
@@ -232,7 +245,7 @@ export const sendQr = (code) => (dispatch, getState) => {
                 }
                 dispatch(addMeter({...data, notify: false}))
             }).catch(e=>{
-                Alert.alert('Ошибка', JSON.stringify(e))
+                badRequest(e)
             })
         } else {
             noInternet()
@@ -293,7 +306,7 @@ export const getMeter = (meter) => (dispatch) => {
                 }
                 dispatch(setActiveData(data))
             }).catch(e=>{
-                Alert.alert('Ошибка', JSON.stringify(e))
+                badRequest(e)
             })
         } else {
             noInternet()
@@ -310,7 +323,7 @@ export const getHistory = (values) => (dispatch) => {
                 dispatch(setLoading('history', false))
                 dispatch(setHistory(data))
             }).catch(e=>{
-                Alert.alert('Ошибка', JSON.stringify(e))
+                badRequest(e)
             })
         } else {
             noInternet()
@@ -340,7 +353,7 @@ export const saveMeter = (values) => (dispatch) => {
                     dispatch(updateMeter(data.meter))
                 }
             }).catch(e=>{
-                Alert.alert('Ошибка', JSON.stringify(e))
+                badRequest(e)
             })
         } else {
             noInternet()
@@ -348,7 +361,56 @@ export const saveMeter = (values) => (dispatch) => {
     })
 }
 
+export const registerDevice = (params) => (dispatch) => {
+    NetInfo.fetch().then(netstate => {
+        if (netstate.isConnected) {
+            dispatch(setExpoToken(params.expo))
+            axios.post(`${url}/api/device/reg`, params).catch((e)=>{
+                console.log('reg error')
+            })
+        } else {
+            noInternet()
+        }
+    })
+}
 
+export const getNews = (type='news') => (dispatch) => {
+    NetInfo.fetch().then(netstate => {
+        if (netstate.isConnected) {
+            dispatch(setLoading(type, true))
+            axios.get(`${url}/api/get-news?page=1`).then(({data}) => {
+                dispatch(setNews(data))
+                dispatch(setNewsUpdated(false))
+                dispatch(setLoading('news', false))
+                dispatch(setLoading('newsUpdating', false))
+            })
+        } else {
+            noInternet()
+        }
+    })
+}
+
+export const loadNews = (page) => (dispatch, getState) => {
+    let news = getState().news
+    NetInfo.fetch().then(netstate => {
+        if (netstate.isConnected) {
+            dispatch(setLoading('news', true))
+            axios.get(`${url}/api/get-news?page=${page}`).then(({data}) => {
+                dispatch(setLoading('news', false))
+                if (news === null) {
+                    dispatch(setNews(data))
+                } else {
+                    dispatch(setNews({
+                        ...data,
+                        data: [ ...news.data, ...data.data]
+                    }))
+                }
+            })
+        } else {
+            noInternet()
+        }
+    })
+}
 
 const reducer = (state = initStore, action) => {
     switch (action.type) {
@@ -367,6 +429,8 @@ const reducer = (state = initStore, action) => {
         case SET_ACTIVE_EDIT: return {...state, activeEdit: action.value}
         case SET_UPDATING: return {...state, updating: action.value}
         case SET_HISTORY: return {...state, history: action.history}
+        case SET_NEWS: return {...state, news: action.news}
+        case SET_NEWS_UPDATED: return {...state, newsUpdated: action.updated}
         default: return state
     }
 }
