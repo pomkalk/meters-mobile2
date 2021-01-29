@@ -30,7 +30,7 @@ const Main = () => {
     const menu = [
         {id: 'news', title: 'Новости', icon: NewsIcon},
         {id: 'meters', title: 'Счетчики', icon: MeterIcon },
-        {id: 'notifications', title: 'Уведомления', icon: NotifyIcon},
+        // {id: 'notifications', title: 'Уведомления', icon: NotifyIcon},
     ]
 
     const onSelect = (x) => {
@@ -44,7 +44,8 @@ const Main = () => {
 
     return (
         <View style={styles.container}>
-            <Appbar action onAction={onSettings} actionIcon={<SettingsIcon />} title={title} subtitle={`ООО "УЕЗ ЖКУ г. Ленинска-Кузнецкого"`} />
+            {/* <Appbar action onAction={onSettings} actionIcon={<SettingsIcon />} title={title} subtitle={`ООО "УЕЗ ЖКУ г. Ленинска-Кузнецкого"`} /> */}
+            <Appbar title={title} subtitle={`ООО "УЕЗ ЖКУ г. Ленинска-Кузнецкого"`} />
             <View style={{flex: 1}}>
                 {page&&page}
             </View>

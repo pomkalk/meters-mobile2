@@ -1,5 +1,5 @@
 import React, { useRef } from 'react'
-import { StyleSheet, View, Text, FlatList, RefreshControl, ScrollView } from 'react-native'
+import { StyleSheet, View, Text, RefreshControl, ScrollView } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 import Loader from './components/Loader'
 import Message from './components/Message'
@@ -59,7 +59,7 @@ const NewsPage = () => {
                 {news&&news.data.map(x=>{
                     return (
                         <View key={x.id} style={{paddingHorizontal: 16}}>
-                            <Message title={x.title} body={x.body} date={ParseDate2(x.updated_at)}/>
+                            <Message ripple title={x.title} body={x.body} date={ParseDate2(x.created_at)}/>
                         </View>
                     )
                 })}

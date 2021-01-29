@@ -201,10 +201,11 @@ export const sendAddress = () => (dispatch, getState) => {
                 apartment: selected.apartment.id,
                 ls: selected.ls,
                 space: selected.space,
+                remember: true
             }
             if (expoToken !== null) {
                 values.did = Constants.installationId
-                values.exp = expoToken
+                values.expo = expoToken
             }
             axios.post(`${url}/api/get-token`, values).then(({data})=>{
                 dispatch(setLoading('request', false))
@@ -236,8 +237,9 @@ export const sendQr = (code) => (dispatch, getState) => {
             }
             if (expoToken !== null) {
                 values.did = Constants.installationId
-                values.exp = expoToken
+                values.expo = expoToken
             }
+            console.log(values)
             axios.post(`${url}/api/get-token/qr`, values).then(({data})=>{
                 dispatch(setLoading('request', false))
                 if (data.error) {
@@ -304,6 +306,7 @@ export const getMeter = (meter) => (dispatch) => {
                 if (data.error) {
                     Alert.alert('Ошибка', data.error)
                 }
+                console.log(data)
                 dispatch(setActiveData(data))
             }).catch(e=>{
                 badRequest(e)

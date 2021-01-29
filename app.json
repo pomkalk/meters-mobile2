@@ -1,7 +1,8 @@
 {
   "expo": {
-    "name": "meters-mobile2",
+    "name": "ООО \"УЕЗ ЖКУ г. Ленинска-Кузнецкого\"",
     "slug": "meters-mobile2",
+    "owner": "pomkalk",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -22,7 +23,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#FFFFFF"
       },
       "package": "com.pomkalk.metersmobile2",

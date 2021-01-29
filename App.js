@@ -24,11 +24,12 @@ export default function App() {
     store.dispatch(getNews())
 
     registerForPushNotifications().then(token => {
-        store.dispatch(registerDevice({
-          did: Constants.installationId,
-          expo: token,
-          info: Constants
-        }))
+      console.log(Constants.installationId, token)
+      store.dispatch(registerDevice({
+        did: Constants.installationId,
+        expo: token,
+        info: Constants
+      }))
     })
 
     notificationListener.current = Notifications.addNotificationReceivedListener(response => {
@@ -65,8 +66,10 @@ export default function App() {
           meters: 'Счетчики',
           notifications: 'Уведомления'
         }
-        store.dispatch(setPageKey(action))
-        store.dispatch(setTitle(title[action]))
+        if (['news', 'meters'].includes(action)) {
+          store.dispatch(setPageKey(action))
+          store.dispatch(setTitle(title[action]))
+        }
       }
     })
 

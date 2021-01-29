@@ -1,17 +1,18 @@
 import React from 'react'
 import { StyleSheet, View, Text } from 'react-native'
 import { InfoIcon } from './Icons'
+import Ripple from 'react-native-material-ripple'
 
-const Message = ({title, body, date}) => {
+const Message = ({title, body, date, ripple}) => {
     return (
-        <View style={styles.message}>
+        <Ripple disabled={ripple?false:true} rippleContainerBorderRadius={4} style={styles.message}>
             <View style={styles.type}></View>
             <View style={styles.content}>
                 <Text style={styles.title}>{title}</Text>
                 {date&&<Text style={styles.date}>{date}</Text>}
                 <Text style={styles.body}>{body}</Text>
             </View>
-        </View>
+        </Ripple>
     )
 }
 
