@@ -93,7 +93,8 @@ const noInternet = () => {
 
 const badRequest = (e) => {
     // TODO: replace with toast
-    Alert.alert('Ошибка', JSON.stringify(e))
+    //Alert.alert('Ошибка', JSON.stringify(e))
+    ToastAndroid.show('Ошибка соединения с сервером')
 }
 
 export const getStatus = () => (dispatch) => {
